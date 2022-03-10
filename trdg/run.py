@@ -3,6 +3,7 @@ import errno
 import os
 import sys
 
+
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import random as rnd
@@ -373,7 +374,7 @@ def main():
         fonts = [
             os.path.join(args.font_dir, p)
             for p in os.listdir(args.font_dir)
-            if os.path.splitext(p)[1] == ".ttf"
+            if os.path.splitext(p)[1] == ".ttf" or os.path.splitext(p)[1] == ".otf"
         ]
     elif args.font:
         if os.path.isfile(args.font):
@@ -426,7 +427,17 @@ def main():
     if args.case == "lower":
         strings = [x.lower() for x in strings]
 
-    string_count = len(strings)
+    # string_count = len(strings)
+    string_count = len(fonts) * len(lang_dict)
+
+    # stringsを単語数 x フォント数に
+    strings = []
+    for word in lang_dict:
+        strings += [word] * len(fonts)
+
+    corr_fonts = []
+    for _ in lang_dict:
+        corr_fonts += fonts
 
     p = Pool(args.thread_count)
     for _ in tqdm(
@@ -435,7 +446,9 @@ def main():
             zip(
                 [i for i in range(0, string_count)],
                 strings,
-                [fonts[rnd.randrange(0, len(fonts))] for _ in range(0, string_count)],
+                # fontの指定ここ変えれば良さそう
+                corr_fonts,
+                # [fonts[rnd.randrange(0, len(fonts))] for _ in range(0, string_count)],
                 [args.output_dir] * string_count,
                 [args.format] * string_count,
                 [args.extension] * string_count,

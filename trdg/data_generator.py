@@ -230,11 +230,13 @@ class FakeTextDataGenerator(object):
         # Apply gaussian blur #
         #######################
 
-        gaussian_filter = ImageFilter.GaussianBlur(
-            radius=blur if not random_blur else rnd.randint(0, blur)
-        )
-        final_image = background_img.filter(gaussian_filter)
-        final_mask = background_mask.filter(gaussian_filter)
+        # gaussian_filter = ImageFilter.GaussianBlur(
+        #     radius=blur if not random_blur else rnd.randint(0, blur)
+        # )
+        # final_image = background_img.filter(gaussian_filter)
+        # final_mask = background_mask.filter(gaussian_filter)
+        final_image = background_img
+        final_mask = background_mask
         
         ############################################
         # Change image mode (RGB, grayscale, etc.) #
@@ -259,7 +261,9 @@ class FakeTextDataGenerator(object):
             print("{} is not a valid name format. Using default.".format(name_format))
             name = "{}_{}".format(text, str(index))
 
-        image_name = "{}.{}".format(name, extension)
+        font_name = font.split("/")[-1].split(".")[0]
+        # image_name = "{}.{}".format(name, extension)
+        image_name = f"{font_name}_{text}.{extension}"
         mask_name = "{}_mask.png".format(name)
         box_name = "{}_boxes.txt".format(name)
         tess_box_name = "{}.box".format(name)
